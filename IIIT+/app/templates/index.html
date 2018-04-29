@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Hey, {{ current_user.username }}!</h1>
+     {% if form %}
+    <form action="" method="post" class="form-group">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.post.label }}<br>
+            {{ form.post(cols=32, rows=4) }}<br>
+            {% for error in form.post.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endif %}
+    {% for post in posts %}
+   {% include '_post.html' %}
+     <!--{% if post.comments %}
+                {% if post.comments.count() > 0 %}
+                    <h2>Comments</h2>
+                    <p>
+                    {% for comment in post.comments %}
+                        <p>{{ comment.body }}</p>
+                    {% endfor %}
+                    </p>
+                {% endif %}
+                {% endif %}-->
+    {% endfor %}
+    {% if prev_url %}
+    <a href="{{ prev_url }}" class="pagination">Newer posts</a>
+    {% endif %}
+    {% if next_url %}
+    <a href="{{ next_url }}" class="pagination">Older posts</a>
+{% endif %}
+{% endblock %}

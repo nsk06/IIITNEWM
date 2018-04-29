@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+	 <h1>All Groups</h1>
+	 {% for group in groups %}
+	 <table>
+	 <tr>
+	 <td>
+     <a href="{{ url_for('vu', groupname=group) }}">
+     {{ group }}
+     </a>
+  	 </td>
+  	 <br>
+  	 <td>
+  	 <br>
+  	 <a href="{{ url_for('join', groupname=group) }}">
+     JOIN
+     </a>
+     </td>
+     </tr>
+    {% endfor %}
+    </table>
+    <hr>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+{% endblock %}

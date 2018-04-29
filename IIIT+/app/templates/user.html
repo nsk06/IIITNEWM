@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<table>
+        <tr valign="top">
+            <td>
+                <h1>User: {{ user.username }}</h1>
+                {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
+                {% if user.last_seen %}<p>Last seen on: {{ user.last_seen }}</p>{% endif %}
+                <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
+                <p><a href="{{ url_for('send_message', username=user.username) }}">DM</a></p>
+                 {% if current_user.username == admin %}
+                <h3>Welcome Admin!</h3>
+                <p><a href="{{ url_for('myadmin') }}">View</a></p>
+                {% endif %}
+                {% if user == current_user %}
+                <p><a href="{{ url_for('edit_profile') }}">Make Changes</a></p>
+                <p><a href="{{ url_for('upload') }}">Upload Profile</a></p>
+                {% elif not current_user.is_following(user) %}
+                <p><a href="{{ url_for('follow', username=user.username) }}">Follow</a></p>
+                {% else %}
+                <p><a href="{{ url_for('unfollow', username=user.username) }}">UnFollow</a></p>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    <h1>User: {{ user.username }}</h1>
+    {% set ab=[user.username,"profile.jpg"]|join('/') %}
+    <img src= "{{ url_for('static', filename = ab ) }}" alt= {{ user.username }} height="80" width="80" class="img-rounded" />
+    <hr>
+    {% for post in posts %}
+    <p>
+    {%set x = [post.author.username,"profile.jpg"]|join('/') %}
+    <img src= "{{ url_for('static', filename = x ) }}" alt= {{ post.author.username }} height="80" width="80" class="img-rounded" />
+    {{ post.author.username }} says: <b>{{ post.body }}</b>
+    </p>
+    {% endfor %}
+    {% if prev_url %}
+    <a href="{{ prev_url }}">Newer posts</a>
+    {% endif %}
+    {% if next_url %}
+    <a href="{{ next_url }}">Older posts</a>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1> My Messages!</h1>
+    {% for message in messages %}
+  <table>
+<tr valign="top">
+{%set x = [message.sender,"profile.jpg"]|join('/') %}
+<td><img src= "{{ url_for('static', filename = x ) }}" alt= {{ message.sender }} height="80" width="80" />
+<td><a href="{{ url_for('user', username=message.sender) }}">{{ message.sender }}</a> says:<br>{{ message.msg }}<br> TO: <a href="{{ url_for('user', username=message.reciever) }}">{{ message.reciever }}</a></td>
+        </tr>
+</table>
+    {% endfor %}
+    <hr>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+{% endblock %}

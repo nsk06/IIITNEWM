@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Send Message</h1>
+    <form action="" method="post" class="form-group">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.msg.label }}<br>
+            {{ form.msg(cols=52, rows=8) }}<br>
+            {% for error in form.msg.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}

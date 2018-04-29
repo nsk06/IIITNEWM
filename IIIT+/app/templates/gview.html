@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Hey, {{ current_user.username }}!</h1>
+    <h3><a href="{{ url_for('Postgroup',groupname = curr) }}">Add</a></h3>
+    {% for post in posts %}
+  <table>
+<tr valign="top">
+{%set x = [post.writer.username,"profile.jpg"]|join('/') %}
+<td><img src= "{{ url_for('static', filename = x ) }}" alt= {{ post.writer.username }} height="80" width="80" />
+<td><a href="{{ url_for('user', username=post.writer.username) }}">{{ post.writer.username }}</a> says:<br>{{ post.pg }}</td>
+        </tr>
+</table>
+    {% endfor %}
+    <hr>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+{% endblock %}

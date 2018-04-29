@@ -1,0 +1,39 @@
+<table class="table table-hover">
+<tr valign="top">
+{%set x = [post.author.username,"profile.jpg"]|join('/') %}
+<td width="70px"><img src= "{{ url_for('static', filename = x ) }}" alt= {{ post.author.username }} height="80" width="80" /></td>
+<td>
+<!--{% set user_link %}
+<span class="user_popup">
+<a href="{{ url_for('user', username=post.author.username) }}">{{ post.author.username }}</a> says:<br>{{ post.body }}
+</span>
+{% endset %}-->
+                    <span class="user_popup">
+                        <a href="{{ url_for('user', username=post.author.username) }}">
+                            {{ post.author.username }}
+                        </a>
+                    </span> 
+                <br>
+                <p>Says:
+                <span id="post{{ post.id }}">{{ post.body }}</span>
+</td>
+<table>
+<tr>{% if post.commentS %}
+		{% if post.commentS.count() >0 %}
+			<h3 padding = "0px">Comments</h3>
+			<table>
+			{% for comment in post.commentS %}
+				<tr>{{ comment.us }} says: {{ comment.body }}</tr>
+				<br>
+			{% endfor %}
+			</table>
+		{% endif %}
+	{% endif %}
+</tr>
+</table>
+<td>
+<a href="{{ url_for('post',i=post.id) }}">Add Comment</a>
+</td>
+        </tr>
+        <br>
+</table>
