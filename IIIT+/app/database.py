@@ -67,6 +67,7 @@ class User(UserMixin,db.Model):
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    last_message_read_time = db.Column(db.DateTime)
     gposts = db.relationship('Ingroup', backref='writer', lazy='dynamic')
     followed = db.relationship(
         'User', secondary=followers,
@@ -74,6 +75,11 @@ class User(UserMixin,db.Model):
         secondaryjoin=(followers.c.followed_id == id),
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
     comments=db.relationship('Comment', backref='creator', lazy='dynamic')
+
+    def new_messages(self):
+        last_read_time = self.last_message_read_time or datetime(1900, 1, 1)
+        return Message.query.filter_by(reciever=self.username).filter(
+            Message.timestamp > last_read_time).count()
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -98,14 +104,14 @@ class User(UserMixin,db.Model):
         followed = Post.query.join(
             followers, (followers.c.followed_id == Post.user_id)).filter(
                 followers.c.follower_id == self.id)
-        for p in followed:
-            form1 = CommentForm()
-            if form1.validate_on_submit():
-                post = Post(body=form1.post.data, author=current_user)
-                db.session.add(post)
-                db.session.commit()
-                flash('You just now commented Wohoo XD!')
-                return redirect(url_for('index'))
+        #for p in followed:
+          #  form1 = CommentForm()
+           # if form1.validate_on_submit():
+             #   post = Post(body=form1.post.data, author=current_user)
+              #  db.session.add(post)
+               # db.session.commit()
+                #flash('You just now commented Wohoo XD!')
+                #return redirect(url_for('index'))
         own = Post.query.filter_by(user_id=self.id)
         return followed.union(own).order_by(Post.timestamp.desc())
         
@@ -174,7 +180,8 @@ class Event(db.Model):
     gr = db.Column(db.String(64),db.ForeignKey('group.groupname'))
     ev = db.Column(db.String(140))
     participants = db.Column(db.Integer)
-    organiser = db.Column(db.Integer,db.ForeignKey('user.username')) 
+    organiser = db.Column(db.Integer,db.ForeignKey('user.username'))
+    location = db.Column(db.String(1024))
 class Message(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     sender = db.Column(db.String(64),db.ForeignKey('user.username'))

@@ -26,7 +26,12 @@
 				<a class = "navbar-brand" href = "{{ url_for('user',username=current_user.username) }}">Profile</a>
 				<a class="navbar-brand" href="{{ url_for('logout') }}">Logout</a>
         <a class="navbar-brand" href="{{ url_for('my') }}">MyGroups</a>
-        <a class="navbar-brand" href="{{ url_for('messages') }}">Messages</a>
+        <a class="navbar-brand" href="{{ url_for('messages') }}">Messages
+        {% set new_messages = current_user.new_messages() %}
+                            {% if new_messages %}
+                            <span class="badge">{{ new_messages }}</span>
+                            {% endif %}
+                        </a>
 				{% endif %}
 			</div>
 		</div>
