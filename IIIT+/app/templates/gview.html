@@ -1,7 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
     <h1>Hey, {{ current_user.username }}!</h1>
-    <h3><a href="{{ url_for('Postgroup',groupname = curr) }}">Add</a></h3>
+    <h3><a href="{{ url_for('Postgroup',groupname = curr) }}">Share Something To Group:</a></h3>
+    <br>
+    <h3><a href="{{ url_for('GroupEvent',groupname = curr) }}">Host an Event:</a></h3>
+    <br>
+    <bold>Upcoming Events</bold>
+    <br>
+    {% for e in events %}
+    <table>
+    <td>Organised by
+        <strong>{{ e.organiser }}:</strong></td>
+        <td><strong> {{ e.ev }} </strong></td>
+        <br>
+        <td><a href = "{{ url_for('eventjoin',eventname = e.ev) }}">JoinEvent</a></td>
+    </table>
+    <br>
+    <br>
+    {% endfor %}
     {% for post in posts %}
   <table>
 <tr valign="top">

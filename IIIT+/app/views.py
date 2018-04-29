@@ -129,6 +129,7 @@ def vu(groupname):
     #print(cur_group)
     #page = request.args.get('page', 1, type=int)
     posts = cur_group.grouppost().all()
+    events = Event.query.filter(Event.gr == groupname).all()
     gposts = Ingroup.query.filter(Ingroup.gp == groupname).all()
     access = Group.query.filter(Group.groupname == groupname).filter(Group.userid == current_user.id).all()
     if len(access) == 0:
@@ -143,7 +144,7 @@ def vu(groupname):
       #  if posts.has_prev else None
     else:
         return render_template('gview.html', title='Home',
-                           posts=gposts,curr = groupname)
+                           posts=gposts,curr = groupname,events = events)
 
 @app.route('/groupjoin/<groupname>')
 @login_required
@@ -163,6 +164,18 @@ def join(groupname):
         print("hi")
         flash('already member')
         return redirect(url_for('Allgroups'))
+
+@app.route('/eventjoin/<eventname>')
+@login_required
+def eventjoin(eventname):
+    my = Event.query.filter(Event.ev == eventname).first()
+    my.participants+=1
+    db.session.commit()
+    c = my.gr
+    print(c)
+    flash('you have decided to join event!')
+    return redirect(url_for('vu',groupname = c))
+
 
 @app.route('/Mygroups')
 @login_required
@@ -267,7 +280,21 @@ def Postgroup(groupname):
         flash('Your post is now live!')
         return redirect(url_for('Postgroup',groupname = groupname))
         #form.about_me.data = current_user.about_me
-    return render_template('postgroup.html', title='Edit Profile',
+    return render_template('postgroup.html', title='Post In Group',
+                           form=form)
+
+@app.route('/GroupEvent/<groupname>',methods=['GET','POST'])
+@login_required
+def GroupEvent(groupname):
+    form = PostForm()
+    if form.validate_on_submit():
+        event = Event(ev=form.post.data, organiser=current_user.username,gr = groupname,participants = 1)
+        db.session.add(event)
+        db.session.commit()
+        flash('You have hosted an upcoming Event')
+        return redirect(url_for('Postgroup',groupname = groupname))
+        #form.about_me.data = current_user.about_me
+    return render_template('postgroup.html', title='Add Event',
                            form=form)
 
 @app.route('/post/<i>',methods=['GET','POST'])

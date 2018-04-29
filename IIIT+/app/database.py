@@ -173,10 +173,13 @@ class Event(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     gr = db.Column(db.String(64),db.ForeignKey('group.groupname'))
     ev = db.Column(db.String(140))
-    Participants = db.Column(db.Integer)
+    participants = db.Column(db.Integer)
+    organiser = db.Column(db.Integer,db.ForeignKey('user.username')) 
 class Message(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     sender = db.Column(db.String(64),db.ForeignKey('user.username'))
     msg = db.Column(db.String(700),index=True)
     reciever = db.Column(db.String(64),db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    def __repr__(self):
+        return '<Message {}>'.format(self.body)
