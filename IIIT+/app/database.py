@@ -127,7 +127,9 @@ class Post(SearchableMixin,db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     commentS = db.relationship('Comment', backref='POst', lazy='dynamic')
-
+    likes = db.relationship('Like', backref='lik', lazy='dynamic')
+    def num(self):
+        return Like.query.filter(Like.po == self.id).count()
     #def get_comments(self):
      #   return Comment.query.filter_by(post_id=post.id).order_by(Comment.timestamp.desc())
 
@@ -190,3 +192,8 @@ class Message(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     def __repr__(self):
         return '<Message {}>'.format(self.body)
+
+class Like(db.Model):
+    id = db.Column(db.Integer,primary_key=True)
+    liker = db.Column(db.String(64),db.ForeignKey('user.username'))
+    po = db.Column(db.Integer, db.ForeignKey('post.id'))

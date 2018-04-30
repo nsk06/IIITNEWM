@@ -146,6 +146,21 @@ def vu(groupname):
         return render_template('gview.html', title='Home',
                            posts=gposts,curr = groupname,events = events)
 
+
+@app.route('/like/<pos>')
+@login_required
+def like(pos):
+    x = Like.query.filter(Like.liker == current_user.username).all()
+    if len(x) >= 1:
+        flash('already liked')
+        return redirect(url_for('index'))
+    else:
+        like = Like(liker = current_user.username, po = pos)
+        db.session.add(like)
+        db.session.commit()
+        flash('You liked this')
+        return redirect(url_for('index'))
+
 @app.route('/groupjoin/<groupname>')
 @login_required
 def join(groupname):
@@ -292,7 +307,7 @@ def GroupEvent(groupname):
         db.session.add(event)
         db.session.commit()
         flash('You have hosted an upcoming Event')
-        return redirect(url_for('Postgroup',groupname = groupname))
+        return redirect(url_for('vu',groupname = groupname))
         #form.about_me.data = current_user.about_me
     return render_template('postgroup.html', title='Add Event',
                            form=form)
@@ -403,7 +418,7 @@ admin.add_view(MyModelView(Post,db.session))
 admin.add_view(MyModelView(Group,db.session))
 admin.add_view(MyModelView(Ingroup,db.session))
 admin.add_view(MyModelView(Message,db.session))
-
+admin.add_view(MyModelView(Comment,db.session))
 
 @app.errorhandler(404)
 def not_found_error(error):

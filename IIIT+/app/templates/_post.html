@@ -31,6 +31,9 @@
 	{% endif %}
 </tr>
 </table>
+<td><a href = "{{ url_for('like', pos = post.id) }}">Like</a>
+</td>
+<br>
 <td>
 <a href="{{ url_for('post',i=post.id) }}">Add Comment</a>
 </td>
